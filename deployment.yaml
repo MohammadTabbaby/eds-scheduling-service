@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scheduling-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: scheduling-deployment
+  template:
+    metadata:
+      labels:
+        app: scheduling-deployment
+    spec:
+      containers:
+        - name: scheduling-service
+          image: scheduling-service
+          ports:
+            - containerPort: 80
