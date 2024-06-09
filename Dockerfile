@@ -1,29 +1,11 @@
-# Stage 1: Build the Angular application
-FROM node:18.12.1 as build
+# Build stage
+FROM maven:3.6-openjdk-17 as builder
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -q -Dmaven.test.skip=true -f /home/app/pom.xml clean package
 
-# Set the working directory
-WORKDIR /app
-
-# Set the environment variable to allow legacy OpenSSL algorithms
-ENV NODE_OPTIONS=--openssl-legacy-provider
-
-# Copy package.json and yarn.lock to leverage Docker layer caching
-COPY package.json yarn.lock ./
-
-# Install dependencies
-RUN yarn install
-
-# Copy the rest of the application code
-COPY . .
-
-# Build the Angular application
-RUN yarn run build
-
-# Stage 2: Serve the application with Nginx
-FROM nginx:alpine
-
-# Expose the port the application will run on
-EXPOSE 80
-
-# Copy the build output to Nginx's HTML directory
-COPY --from=build /app/dist/angular-front /usr/share/nginx/html
+# Package stage
+FROM openjdk:17
+COPY --from=builder /home/app/target/schedulingservice-0.0.1-SNAPSHOT.jar /usr/local/lib/schedulingservice.jar
+EXPOSE 8086
+ENTRYPOINT ["java", "-jar", "/usr/local/lib/schedulingservice.jar"]

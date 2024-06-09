@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: scheduling-deployment
+  name: scheduling-service-deployment
 
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: scheduling-deployment
+      app: scheduling-microservice
   template:
     metadata:
       labels:
-        app: scheduling-deployment
+        app: scheduling-microservice
     spec:
       containers:
-        - name: scheduling-service
-          image: scheduling-service
+        - name: scheduling-microservice-container
+          image: mohammadtabbaby/backend
           ports:
-            - containerPort: 80
+            - containerPort: 90
