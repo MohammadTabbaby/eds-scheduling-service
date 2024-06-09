@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: mysql-deployment
 spec:
   selector:
     matchLabels:
@@ -15,10 +15,10 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: mysql:5.7
+        image: mysql:8.0
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: ""
+          value: yourpassword  # Set your root password here
         - name: MYSQL_DATABASE
           value: scheduling_service
         ports:
