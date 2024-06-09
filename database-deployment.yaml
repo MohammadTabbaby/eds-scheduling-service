@@ -17,7 +17,7 @@ spec:
           image: mysql:latest
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: ""
+              value: ""  # Replace with a strong password
             - name: MYSQL_DATABASE
               value: schedulingService
 ---
@@ -26,6 +26,7 @@ kind: Service
 metadata:
   name: mysql-service
 spec:
+  type: LoadBalancer  # Use LoadBalancer or NodePort to expose the service
   selector:
     app: mysql
   ports:
