@@ -7,6 +7,6 @@ spec:
     app: scheduling-microservice
   ports:
     - protocol: TCP
-      port: 90
-      targetPort: 90
+      port: 9002
+      targetPort: 9002
   type: LoadBalancer
