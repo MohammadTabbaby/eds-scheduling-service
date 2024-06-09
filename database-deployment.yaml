@@ -1,35 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-deployment
+  name: mysql
 spec:
-  replicas: 2
   selector:
     matchLabels:
       app: mysql
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
         app: mysql
     spec:
       containers:
-        - name: mysql
-          image: mysql:latest
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: ""  # Replace with a strong password
-            - name: MYSQL_DATABASE
-              value: schedulingService
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql-service
-spec:
-  type: LoadBalancer  # Use LoadBalancer or NodePort to expose the service
-  selector:
-    app: mysql
-  ports:
-    - protocol: TCP
-      port: 3306
-      targetPort: 3306
+      - name: mysql
+        image: mysql:5.7
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: ""
+        - name: MYSQL_DATABASE
+          value: scheduling_service
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-initdb
+          mountPath: /docker-entrypoint-initdb.d
+      initContainers:
+      - name: init-mysql
+        image: busybox
+        command: ['sh', '-c', 'cp /config/init.sql /docker-entrypoint-initdb.d']
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config
+        - name: mysql-initdb
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: config-volume
+        configMap:
+          name: mysql-init-script
+      - name: mysql-initdb
+        emptyDir: {}
