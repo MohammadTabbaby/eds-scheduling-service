@@ -2,7 +2,7 @@
 FROM maven:3.6-openjdk-17 as builder
 COPY src /home/app/src
 COPY pom.xml /home/app
-RUN mvn -q -Dmaven.test.skip=true -f /home/app/pom.xml clean package
+RUN mvn -q -D maven.test.skip=true -f /home/app/pom.xml clean package
 
 # Package stage
 FROM openjdk:17

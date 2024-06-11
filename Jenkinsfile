@@ -4,14 +4,11 @@ pipeline {
     environment {
         DOCKER_PATH = "C:\\Program Files\\Docker\\cli-plugins"
         PATH = "${DOCKER_PATH}:${PATH}"
-        KUBERNETES_NAMESPACE = 'default'  // Change this to your desired namespace
+        KUBERNETES_NAMESPACE = 'scheduling'  // Change this to your desired namespace
         KUBERNETES_DEPLOYMENT = 'backend'
-        DOCKER_IMAGE = 'mohammadtabbaby/backend'
+        DOCKER_IMAGE = 'mohammadtabbaby/schedulingservice'
         DOCKER_TAG = 'latest'
         KUBECONFIG = 'C:\\Users\\MohamedTabbabi\\.kube\\config'  // Update this path to your actual kubeconfig path
-        SERVICE_YAML_FILE = 'backend-service.yaml' // Path to your NodePort service YAML file
-        DEPLOYMENT_YAML_FILE = 'deployment.yaml' // Path to your deployment YAML file
-        DATABASE_YAML_FILE = 'database-deployment.yaml' // Path to your database deployment YAML file
     }
 
     stages {
@@ -64,27 +61,23 @@ pipeline {
             }
         }
 
-        stage('Deploy Docker Image to Kubernetes : Creating LoadBalancer Service') {
-            steps {
-                // Apply the NodePort service YAML file
-                bat "kubectl apply -f ${SERVICE_YAML_FILE}"
-            }
-        }
-
-        stage('Deploy Docker Image to Kubernetes : Applying Deployment YAML') {
-            steps {
-                // Apply the deployment YAML file
-                bat "kubectl apply -f ${DEPLOYMENT_YAML_FILE}"
-            }
-        }
-
-        stage('Deploy Database to Kubernetes') {
+        stage('Deploy with kubectl') {
             steps {
                 script {
-                    echo "Deploying database to Kubernetes..."
-                    bat "kubectl apply -f ${DATABASE_YAML_FILE}"
+                    bat '''
+                    kubectl config view
+                    kubectl config use-context docker-desktop
+                    kubectl cluster-info
+                    kubectl get nodes
+                    kubectl get namespace scheduling || kubectl create namespace scheduling
+                    kubectl apply -f docker/configMap.yml -n scheduling
+                    kubectl apply -f docker/mysqldep.yml -n scheduling
+                    kubectl apply -f docker/persistant.yaml -n scheduling
+                    kubectl apply -f deployment.yaml -n scheduling
+                    '''
                 }
             }
+        }
         }
     }
 

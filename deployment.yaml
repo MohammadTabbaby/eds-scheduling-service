@@ -1,20 +1,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: scheduling-service-deployment
-
+  name: backend-deployment
+  namespace: scheduling
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: scheduling-microservice
+      app: backend
   template:
     metadata:
       labels:
-        app: scheduling-microservice
+        app: backend
     spec:
       containers:
-        - name: scheduling-microservice-container
-          image: mohammadtabbaby/backend
+        - name: backend
+          image: mohammadtabbaby/schedulingservice
           ports:
             - containerPort: 9002
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: scheduling
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 9002
+      targetPort: 9002
+  type: LoadBalancer

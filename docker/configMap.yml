@@ -1,0 +1,171 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-configmap
+  namespace: scheduling
+data:
+  init.sql: |
+    -- Create the database if it doesn't exist
+    CREATE DATABASE IF NOT EXISTS scheduling_service;
+
+    -- Use the scheduling_service database
+    USE scheduling_service;
+
+    -- Table: class_entity
+    CREATE TABLE IF NOT EXISTS class_entity
+    (
+        id   bigint(20) NOT NULL AUTO_INCREMENT,
+        name varchar(255) DEFAULT NULL,
+        PRIMARY KEY (id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
+    -- Table: professor_entity
+    CREATE TABLE IF NOT EXISTS professor_entity
+    (
+        id   bigint(20) NOT NULL AUTO_INCREMENT,
+        name varchar(255) DEFAULT NULL,
+        PRIMARY KEY (id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
+    -- Table: room_entity
+    CREATE TABLE IF NOT EXISTS room_entity
+    (
+        id   bigint(20) NOT NULL AUTO_INCREMENT,
+        name varchar(255) DEFAULT NULL,
+        PRIMARY KEY (id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
+    -- Table: subject_entity
+    CREATE TABLE IF NOT EXISTS subject_entity
+    (
+        id   bigint(20) NOT NULL AUTO_INCREMENT,
+        name varchar(255) DEFAULT NULL,
+        PRIMARY KEY (id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
+    -- Table: timetable_entity
+    CREATE TABLE IF NOT EXISTS timetable_entity
+    (
+        id           bigint(20) NOT NULL AUTO_INCREMENT,
+        class_id     bigint(20) DEFAULT NULL,
+        professor_id bigint(20) DEFAULT NULL,
+        room_id      bigint(20) DEFAULT NULL,
+        subject_id   bigint(20) DEFAULT NULL,
+        PRIMARY KEY (id),
+        KEY FKnglo4th2x04y47txerj6a1rfk (class_id),
+        KEY FKoxvl4p1ixar0ktu03s33fmnm1 (professor_id),
+        KEY FK5u4aim8t28x8oe9ydte7dvnmn (room_id),
+        KEY FKkl48ujo90xi8kmm3qoe14k7jc (subject_id),
+        FOREIGN KEY (class_id) REFERENCES class_entity (id),
+        FOREIGN KEY (professor_id) REFERENCES professor_entity (id),
+        FOREIGN KEY (room_id) REFERENCES room_entity (id),
+        FOREIGN KEY (subject_id) REFERENCES subject_entity (id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
+    -- Table: timetable_timeslots
+    CREATE TABLE IF NOT EXISTS timetable_timeslots
+    (
+        timetable_id bigint(20) NOT NULL,
+        day          varchar(255) DEFAULT NULL,
+        end_time     varchar(255) DEFAULT NULL,
+        start_time   varchar(255) DEFAULT NULL,
+        FOREIGN KEY (timetable_id) REFERENCES timetable_entity (id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
+    -- Table: time_slots
+    CREATE TABLE IF NOT EXISTS time_slots
+    (
+        time_slot_id bigint(20) NOT NULL AUTO_INCREMENT,
+        time_slot    varchar(255) DEFAULT NULL,
+        PRIMARY KEY (time_slot_id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
+    -- Table: time_slot_entity
+    CREATE TABLE IF NOT EXISTS time_slot_entity
+    (
+        id           bigint(20) NOT NULL AUTO_INCREMENT,
+        day          varchar(255) DEFAULT NULL,
+        timetable_id bigint(20)   DEFAULT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (timetable_id) REFERENCES timetable_entity (id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
+    -- Table: user
+    CREATE TABLE IF NOT EXISTS user
+    (
+        id       bigint(20) NOT NULL AUTO_INCREMENT,
+        password varchar(255) DEFAULT NULL,
+        username varchar(255) DEFAULT NULL,
+        PRIMARY KEY (id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
+    -- Insert initial data into the user table
+    INSERT INTO user (id, password, username)
+    VALUES (1, 'admin', 'admin');
+
+    -- Table: selected_time_slots
+    CREATE TABLE IF NOT EXISTS selected_time_slots
+    (
+        timetable_id bigint(20) NOT NULL,
+        time_slot    varchar(255) DEFAULT NULL,
+        selected_day varchar(255) DEFAULT NULL,
+        FOREIGN KEY (timetable_id) REFERENCES timetable_entity (id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
+    -- Table: timetable_day_time_slots
+    CREATE TABLE IF NOT EXISTS timetable_day_time_slots
+    (
+        timetable_id bigint(20)   NOT NULL,
+        time_slots   varchar(255) DEFAULT NULL,
+        day          varchar(255) NOT NULL,
+        PRIMARY KEY (timetable_id, day),
+        FOREIGN KEY (timetable_id) REFERENCES timetable_entity (id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
+    -- Table: timetable_entity_selected_days
+    CREATE TABLE IF NOT EXISTS timetable_entity_selected_days
+    (
+        timetable_entity_id bigint(20) NOT NULL,
+        selected_days       varchar(255) DEFAULT NULL,
+        FOREIGN KEY (timetable_entity_id) REFERENCES timetable_entity (id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
+    -- Table: timetable_entity_selected_time_slots
+    CREATE TABLE IF NOT EXISTS timetable_entity_selected_time_slots
+    (
+        timetable_entity_id bigint(20) NOT NULL,
+        selected_time_slots varchar(255) DEFAULT NULL,
+        FOREIGN KEY (timetable_entity_id) REFERENCES timetable_entity (id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
+    -- Create indexes
+    -- Add your index creation statements here if needed
+
+    -- Commit the changes
+    COMMIT;
