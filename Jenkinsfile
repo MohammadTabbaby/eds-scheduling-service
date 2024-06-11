@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_PATH = "C:\\Program Files\\Docker\\cli-plugins"
-        PATH = "${DOCKER_PATH}:${PATH}"
+        DOCKER_PATH = 'C:\\Program Files\\Docker\\cli-plugins'
+        PATH = "${DOCKER_PATH};${PATH}"
         KUBERNETES_NAMESPACE = 'scheduling'  // Change this to your desired namespace
         KUBERNETES_DEPLOYMENT = 'backend'
         DOCKER_IMAGE = 'mohammadtabbaby/schedulingservice'
@@ -72,12 +72,11 @@ pipeline {
                     kubectl get namespace scheduling || kubectl create namespace scheduling
                     kubectl apply -f docker/configMap.yml -n scheduling
                     kubectl apply -f docker/mysqldep.yml -n scheduling
-                    kubectl apply -f docker/persistant.yaml -n scheduling
+                    kubectl apply -f docker/persistent.yaml -n scheduling
                     kubectl apply -f deployment.yaml -n scheduling
                     '''
                 }
             }
-        }
         }
     }
 
