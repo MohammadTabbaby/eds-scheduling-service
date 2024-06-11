@@ -106,21 +106,6 @@ data:
       DEFAULT CHARSET = utf8mb4
       COLLATE = utf8mb4_general_ci;
 
-    -- Table: user
-    CREATE TABLE IF NOT EXISTS user
-    (
-        id       bigint(20) NOT NULL AUTO_INCREMENT,
-        password varchar(255) DEFAULT NULL,
-        username varchar(255) DEFAULT NULL,
-        PRIMARY KEY (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
-
-    -- Insert initial data into the user table
-    INSERT INTO user (id, password, username)
-    VALUES (1, 'admin', 'admin');
-
     -- Table: selected_time_slots
     CREATE TABLE IF NOT EXISTS selected_time_slots
     (
