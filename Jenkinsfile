@@ -72,7 +72,7 @@ pipeline {
                     kubectl get namespace scheduling || kubectl create namespace scheduling
                     kubectl apply -f docker/configMap.yml -n scheduling
                     kubectl apply -f docker/mysqldep.yml -n scheduling
-                    kubectl apply -f docker/persistant.yaml -n scheduling
+                    kubectl apply -f docker/persistent.yaml -n scheduling
                     kubectl apply -f deployment.yaml -n scheduling
                     '''
                 }
