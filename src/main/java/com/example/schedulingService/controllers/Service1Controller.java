@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class Service1Controller {
 
-  @GetMapping(name = "/say",value = "/say")
+  @GetMapping(name = "/test",value = "/test")
   public String sayHello() {
 
-    return "Hello From Service1";
+    return "Hello From Scheduling-service";
   }
 
 

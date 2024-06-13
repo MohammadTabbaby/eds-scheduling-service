@@ -72,6 +72,16 @@ data:
       DEFAULT CHARSET = utf8mb4
       COLLATE = utf8mb4_general_ci;
 
+    -- Table: time_slots
+    CREATE TABLE IF NOT EXISTS time_slots
+    (
+        time_slot_id bigint(20) NOT NULL AUTO_INCREMENT,
+        time_slot    varchar(255) DEFAULT NULL,
+        PRIMARY KEY (time_slot_id)
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8mb4
+      COLLATE = utf8mb4_general_ci;
+
     -- Table: timetable_timeslots
     CREATE TABLE IF NOT EXISTS timetable_timeslots
     (
@@ -80,16 +90,6 @@ data:
         end_time     varchar(255) DEFAULT NULL,
         start_time   varchar(255) DEFAULT NULL,
         FOREIGN KEY (timetable_id) REFERENCES timetable_entity (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
-
-    -- Table: time_slots
-    CREATE TABLE IF NOT EXISTS time_slots
-    (
-        time_slot_id bigint(20) NOT NULL AUTO_INCREMENT,
-        time_slot    varchar(255) DEFAULT NULL,
-        PRIMARY KEY (time_slot_id)
     ) ENGINE = InnoDB
       DEFAULT CHARSET = utf8mb4
       COLLATE = utf8mb4_general_ci;
@@ -168,4 +168,4 @@ data:
     -- Add your index creation statements here if needed
 
     -- Commit the changes
-    COMMIT;
+    -- COMMIT;
