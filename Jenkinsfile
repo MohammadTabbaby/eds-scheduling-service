@@ -61,7 +61,7 @@ pipeline {
             }
         }
 
-        stage('Deploy with kubectl') {
+        stage('Deploy with Kubectl') {
             steps {
                 script {
                     bat '''
