@@ -4,18 +4,17 @@ pipeline {
     environment {
         DOCKER_PATH = 'C:\\Program Files\\Docker\\cli-plugins'
         PATH = "${DOCKER_PATH};${PATH}"
-        KUBERNETES_NAMESPACE = 'scheduling'  // Change this to your desired namespace
+        KUBERNETES_NAMESPACE = 'scheduling'
         KUBERNETES_DEPLOYMENT = 'backend'
         DOCKER_IMAGE = 'mohammadtabbaby/schedulingservice'
         DOCKER_TAG = 'latest'
-        KUBECONFIG = 'C:\\Users\\MohamedTabbabi\\.kube\\config'  // Update this path to your actual kubeconfig path
+        KUBECONFIG = 'C:\\Users\\MohamedTabbabi\\.kube\\config'
     }
 
     stages {
         stage('Set Up Environment') {
             steps {
                 script {
-                    // Ensure paths and tools are accessible
                     echo "Setting up environment..."
                     bat "echo 'Setting up Docker path: ${DOCKER_PATH}'"
                     bat "echo 'Setting up KUBECONFIG: ${KUBECONFIG}'"
@@ -26,7 +25,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build and tag the Docker image
                     echo "Building Docker image..."
                     bat "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
                 }
@@ -36,7 +34,6 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Push the Docker image to the registry
                     echo "Pushing Docker image..."
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         bat """
@@ -51,7 +48,6 @@ pipeline {
         stage('Verify Docker Image') {
             steps {
                 script {
-                    // Verify the Docker image exists
                     echo "Verifying and pulling Docker image..."
                     bat """
                     docker pull ${DOCKER_IMAGE}:${DOCKER_TAG}
@@ -82,7 +78,6 @@ pipeline {
 
     post {
         always {
-            // Cleanup or additional actions after the pipeline runs
             echo "Pipeline completed"
         }
     }

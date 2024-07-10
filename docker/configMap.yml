@@ -5,167 +5,158 @@ metadata:
   namespace: scheduling
 data:
   init.sql: |
-    -- Create the database if it doesn't exist
-    CREATE DATABASE IF NOT EXISTS scheduling_service;
+    --
+    -- Table structure for table `class_entity`
+    --
 
-    -- Use the scheduling_service database
-    USE scheduling_service;
+    CREATE TABLE `class_entity` (
+      `id` bigint(20) NOT NULL,
+      `name` varchar(255) DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-    -- Table: class_entity
-    CREATE TABLE IF NOT EXISTS class_entity
-    (
-        id   bigint(20) NOT NULL AUTO_INCREMENT,
-        name varchar(255) DEFAULT NULL,
-        PRIMARY KEY (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
+    --
+    -- Dumping data for table `class_entity`
+    --
 
-    -- Table: professor_entity
-    CREATE TABLE IF NOT EXISTS professor_entity
-    (
-        id   bigint(20) NOT NULL AUTO_INCREMENT,
-        name varchar(255) DEFAULT NULL,
-        PRIMARY KEY (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
+    INSERT INTO `class_entity` (`id`, `name`) VALUES
+    (1, 'Master 1'),
+    (2, 'Mastere 2');
 
-    -- Table: room_entity
-    CREATE TABLE IF NOT EXISTS room_entity
-    (
-        id   bigint(20) NOT NULL AUTO_INCREMENT,
-        name varchar(255) DEFAULT NULL,
-        PRIMARY KEY (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
+    -- --------------------------------------------------------
 
-    -- Table: subject_entity
-    CREATE TABLE IF NOT EXISTS subject_entity
-    (
-        id   bigint(20) NOT NULL AUTO_INCREMENT,
-        name varchar(255) DEFAULT NULL,
-        PRIMARY KEY (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
+    --
+    -- Table structure for table `professor_entity`
+    --
 
-    -- Table: timetable_entity
-    CREATE TABLE IF NOT EXISTS timetable_entity
-    (
-        id           bigint(20) NOT NULL AUTO_INCREMENT,
-        class_id     bigint(20) DEFAULT NULL,
-        professor_id bigint(20) DEFAULT NULL,
-        room_id      bigint(20) DEFAULT NULL,
-        subject_id   bigint(20) DEFAULT NULL,
-        PRIMARY KEY (id),
-        KEY FKnglo4th2x04y47txerj6a1rfk (class_id),
-        KEY FKoxvl4p1ixar0ktu03s33fmnm1 (professor_id),
-        KEY FK5u4aim8t28x8oe9ydte7dvnmn (room_id),
-        KEY FKkl48ujo90xi8kmm3qoe14k7jc (subject_id),
-        FOREIGN KEY (class_id) REFERENCES class_entity (id),
-        FOREIGN KEY (professor_id) REFERENCES professor_entity (id),
-        FOREIGN KEY (room_id) REFERENCES room_entity (id),
-        FOREIGN KEY (subject_id) REFERENCES subject_entity (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
+    CREATE TABLE `professor_entity` (
+      `id` bigint(20) NOT NULL,
+      `name` varchar(255) DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-    -- Table: time_slots
-    CREATE TABLE IF NOT EXISTS time_slots
-    (
-        time_slot_id bigint(20) NOT NULL AUTO_INCREMENT,
-        time_slot    varchar(255) DEFAULT NULL,
-        PRIMARY KEY (time_slot_id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
+    --
+    -- Dumping data for table `professor_entity`
+    --
 
-    -- Table: timetable_timeslots
-    CREATE TABLE IF NOT EXISTS timetable_timeslots
-    (
-        timetable_id bigint(20) NOT NULL,
-        day          varchar(255) DEFAULT NULL,
-        end_time     varchar(255) DEFAULT NULL,
-        start_time   varchar(255) DEFAULT NULL,
-        FOREIGN KEY (timetable_id) REFERENCES timetable_entity (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
+    INSERT INTO `professor_entity` (`id`, `name`) VALUES
+    (1, 'M. Adem'),
+    (2, 'Mr. Rami'),
+    (3, 'Mr. Hafedh');
 
-    -- Table: time_slot_entity
-    CREATE TABLE IF NOT EXISTS time_slot_entity
-    (
-        id           bigint(20) NOT NULL AUTO_INCREMENT,
-        day          varchar(255) DEFAULT NULL,
-        timetable_id bigint(20)   DEFAULT NULL,
-        PRIMARY KEY (id),
-        FOREIGN KEY (timetable_id) REFERENCES timetable_entity (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
+    -- --------------------------------------------------------
 
-    -- Table: user
-    CREATE TABLE IF NOT EXISTS user
-    (
-        id       bigint(20) NOT NULL AUTO_INCREMENT,
-        password varchar(255) DEFAULT NULL,
-        username varchar(255) DEFAULT NULL,
-        PRIMARY KEY (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
+    --
+    -- Table structure for table `room_entity`
+    --
 
-    -- Insert initial data into the user table
-    INSERT INTO user (id, password, username)
-    VALUES (1, 'admin', 'admin');
+    CREATE TABLE `room_entity` (
+      `id` bigint(20) NOT NULL,
+      `name` varchar(255) DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-    -- Table: selected_time_slots
-    CREATE TABLE IF NOT EXISTS selected_time_slots
-    (
-        timetable_id bigint(20) NOT NULL,
-        time_slot    varchar(255) DEFAULT NULL,
-        selected_day varchar(255) DEFAULT NULL,
-        FOREIGN KEY (timetable_id) REFERENCES timetable_entity (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
+    --
+    -- Dumping data for table `room_entity`
+    --
 
-    -- Table: timetable_day_time_slots
-    CREATE TABLE IF NOT EXISTS timetable_day_time_slots
-    (
-        timetable_id bigint(20)   NOT NULL,
-        time_slots   varchar(255) DEFAULT NULL,
-        day          varchar(255) NOT NULL,
-        PRIMARY KEY (timetable_id, day),
-        FOREIGN KEY (timetable_id) REFERENCES timetable_entity (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
+    INSERT INTO `room_entity` (`id`, `name`) VALUES
+    (1, 'Salle 1'),
+    (2, 'salle 0'),
+    (3, 'Salle 13');
 
-    -- Table: timetable_entity_selected_days
-    CREATE TABLE IF NOT EXISTS timetable_entity_selected_days
-    (
-        timetable_entity_id bigint(20) NOT NULL,
-        selected_days       varchar(255) DEFAULT NULL,
-        FOREIGN KEY (timetable_entity_id) REFERENCES timetable_entity (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
+    -- --------------------------------------------------------
 
-    -- Table: timetable_entity_selected_time_slots
-    CREATE TABLE IF NOT EXISTS timetable_entity_selected_time_slots
-    (
-        timetable_entity_id bigint(20) NOT NULL,
-        selected_time_slots varchar(255) DEFAULT NULL,
-        FOREIGN KEY (timetable_entity_id) REFERENCES timetable_entity (id)
-    ) ENGINE = InnoDB
-      DEFAULT CHARSET = utf8mb4
-      COLLATE = utf8mb4_general_ci;
+    --
+    -- Table structure for table `subject_entity`
+    --
 
-    -- Create indexes
-    -- Add your index creation statements here if needed
+    CREATE TABLE `subject_entity` (
+      `id` bigint(20) NOT NULL,
+      `name` varchar(255) DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-    -- Commit the changes
-    -- COMMIT;
+    --
+    -- Dumping data for table `subject_entity`
+    --
+
+    INSERT INTO `subject_entity` (`id`, `name`) VALUES
+    (1, 'Anglais'),
+    (2, 'Automatisation'),
+    (3, 'Culture Devops');
+
+    -- --------------------------------------------------------
+
+    --
+    -- Table structure for table `timetable_entity`
+    --
+
+    CREATE TABLE `timetable_entity` (
+      `id` bigint(20) NOT NULL,
+      `class_id` bigint(20) DEFAULT NULL,
+      `professor_id` bigint(20) DEFAULT NULL,
+      `room_id` bigint(20) DEFAULT NULL,
+      `subject_id` bigint(20) DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+    --
+    -- Dumping data for table `timetable_entity`
+    --
+
+    INSERT INTO `timetable_entity` (`id`, `class_id`, `professor_id`, `room_id`, `subject_id`) VALUES
+    (1, 1, 1, 1, 1),
+    (2, 1, 1, 1, 1),
+    (3, 1, 1, 1, 1),
+    (4, 2, 2, 3, 2),
+    (5, 2, 3, 1, 3),
+    (6, 2, 1, 3, 1);
+
+    -- --------------------------------------------------------
+
+    --
+    -- Table structure for table `timetable_timeslots`
+    --
+
+    CREATE TABLE `timetable_timeslots` (
+      `timetable_id` bigint(20) NOT NULL,
+      `day` varchar(255) DEFAULT NULL,
+      `end_time` varchar(255) DEFAULT NULL,
+      `start_time` varchar(255) DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+    --
+    -- Dumping data for table `timetable_timeslots`
+    --
+
+    INSERT INTO `timetable_timeslots` (`timetable_id`, `day`, `end_time`, `start_time`) VALUES
+    (1, 'Friday', '10:00', '08:30'),
+    (1, 'Wednesday', '11:40', '10:10'),
+    (2, 'Monday', '11:40', '10:10'),
+    (2, 'Tuesday', '10:00', '08:30'),
+    (2, 'Tuesday', '11:40', '10:10'),
+    (2, 'Monday', '10:00', '08:30'),
+    (3, 'Tuesday', '10:00', '08:30'),
+    (3, 'Monday', '11:40', '10:10'),
+    (4, 'Monday', '10:00', '08:30'),
+    (4, 'Tuesday', '11:40', '10:10'),
+    (4, 'Monday', '11:40', '10:10'),
+    (4, 'Tuesday', '10:00', '08:30'),
+    (5, 'Wednesday', '11:40', '10:10'),
+    (5, 'Wednesday', '10:00', '08:30'),
+    (6, 'Friday', '10:00', '08:30');
+
+    -- --------------------------------------------------------
+
+    --
+    -- Table structure for table `user`
+    --
+
+    CREATE TABLE `user` (
+      `id` bigint(20) NOT NULL,
+      `password` varchar(255) DEFAULT NULL,
+      `username` varchar(255) DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+    --
+    -- Dumping data for table `user`
+    --
+
+    INSERT INTO `user` (`id`, `password`, `username`) VALUES
+    (1, 'admin', 'admin');
